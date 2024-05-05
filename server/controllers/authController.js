@@ -57,6 +57,11 @@ const loginController = async (req, res) => {
       _id: user._id,
     });
 
+    const refreshToken = generateRefreshToken({
+      _id: user._id,
+      email: user.email,
+    });
+
     return res.json({ accessToken });
   } catch (e) {
     console.log(e);
@@ -67,7 +72,19 @@ const loginController = async (req, res) => {
 const generateAccessToken = (data) => {
   try {
     const token = jwt.sign(data, process.env.ACCESS_TOKEN_PRIVATE_KEY, {
-      expiresIn: "20s",
+      expiresIn: "15m",
+    });
+    console.log(token);
+    return token;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const generateRefreshToken = (data) => {
+  try {
+    const token = jwt.sign(data, process.env.REFRESH_TOKEN_PRIVATE_KEY, {
+      expiresIn: "1y",
     });
     console.log(token);
     return token;
